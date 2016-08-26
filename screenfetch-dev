@@ -68,7 +68,8 @@ upload=
 uploadLoc=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
-shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
+shotfile_date=$(date +'%Y-%m-%d_%H-%M-%S')
+shotfile=$(printf "screenFetch-%s.png" "${shotfile_date}")
 
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
@@ -113,7 +114,7 @@ getColor() {
 			'cyan')		color_ret='\033[0m\033[36m';;
 			'yellow')	color_ret='\033[0m\033[1;33m';;
 			'white')	color_ret='\033[0m\033[1;37m';;
-			
+
 			'dark grey')	color_ret='\033[0m\033[1;30m';;
 			'light red')	color_ret='\033[0m\033[1;31m';;
 			'light green')	color_ret='\033[0m\033[1;32m';;
