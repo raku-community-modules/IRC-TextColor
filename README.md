@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/samcv/IRC-TextColor.svg?branch=master)](https://travis-ci.org/samcv/IRC-TextColor)
+
 IRC::TextColor
 ==============
 
@@ -7,9 +9,9 @@ A plugin to style and color text for IRC. It can also convert the ANSIColor text
 
 ```
 sub irc-style-text(
-    Str $text is copy, 
-    :$style = 0, 
-    :$color = 0, 
+    Str $text is copy,
+    :$style = 0,
+    :$color = 0,
     :$bgcolor = 0
 ) returns Str
 ```
