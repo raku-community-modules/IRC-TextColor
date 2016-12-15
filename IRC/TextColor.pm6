@@ -1,4 +1,8 @@
 use v6;
+=head1 IRC::TextColor
+=para
+A plugin to style and color text for IRC. It can also convert the ANSIColor text and style from your terminal to IRC Text and style.
+
 my %irc-styles =
 	'bold'      => 2.chr,
 	'bold_off'  => 2.chr,
@@ -61,7 +65,10 @@ sub irc-style-char ( Str $style ) is export {
 sub irc-color-start ( Str $color ) is export {
 	return %irc-styles{'color'} ~ %irc-colors{$color} if %irc-colors{$color};
 }
-sub irc-text ( $text is copy, :$style? = 0, :$color? = 0, :$bgcolor? = 0 ) is export {
+#| styles and colors text. returns a copy.
+#| Colors allowed: white, blue, green, red, brown, purple, orange, yellow, light_green, teal,
+#| light_cyan, light_blue, pink, grey, light_grey.
+sub irc-style-text ( Str $text is copy, :$style? = 0, :$color? = 0, :$bgcolor? = 0 ) returns Str is export {
 	if $color or $bgcolor {
 		if $color and $bgcolor {
 			$text = %irc-styles<color> ~ %irc-colors{$color} ~ ',' ~ %irc-colors{$bgcolor} ~ $text ~ %irc-styles<reset>;
@@ -78,21 +85,7 @@ sub irc-text ( $text is copy, :$style? = 0, :$color? = 0, :$bgcolor? = 0 ) is ex
 	return $text;
 }
 
-sub irc-style (Str $text is rw, :$color? = 0, :$style? = 0) is export {
-	given $color {
-		if %irc-colors{$color} {
-			$text = %irc-styles{'color'} ~ %irc-colors{$color} ~ $text ~ %irc-styles{'reset'};
-		}
-	}
-	given $style {
-		if %irc-styles{$style} {
-			$text = %irc-styles{$style} ~ $text ~ %irc-styles{'reset'};
-		}
-	}
-	return $text;
-}
-
-sub ansi-to-irc ($text is rw) is export {
+sub ansi-to-irc (Str $text is copy) is export returns Str {
 	my $escape = "\e[";
 	my $end = 'm';
 	if $text ~~ /$escape/ {
