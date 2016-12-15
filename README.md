@@ -15,3 +15,13 @@ sub irc-style-text(
 ```
 
 styles and colors text. returns a copy. Colors allowed: white, blue, green, red, brown, purple, orange, yellow, light_green, teal, light_cyan, light_blue, pink, grey, light_grey.
+
+### sub ansi-to-irc
+
+```
+sub ansi-to-irc(
+    Str $text is copy
+) returns Str
+```
+
+Convert ANSI style/colored text from your terminal output to IRC styled/colored text. Supports both foreground and background color, as well as italic, underline and bold.

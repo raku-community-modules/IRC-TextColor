@@ -84,7 +84,8 @@ sub irc-style-text ( Str $text is copy, :$style? = 0, :$color? = 0, :$bgcolor? =
 	}
 	return $text;
 }
-
+#| Convert ANSI style/colored text from your terminal output to IRC styled/colored text.
+#| Supports both foreground and background color, as well as italic, underline and bold.
 sub ansi-to-irc (Str $text is copy) is export returns Str {
 	my $escape = "\e[";
 	my $end = 'm';
