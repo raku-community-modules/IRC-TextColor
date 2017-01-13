@@ -65,6 +65,17 @@ sub irc-style-char ( Str $style ) is export {
 sub irc-color-start ( Str $color ) is export {
 	return %irc-styles{'color'} ~ %irc-colors{$color} if %irc-colors{$color};
 }
+#| a shortened function. Like irc-style-text but you can use shorter versions like
+#| C<ircstyle('text', :bold, :green)
+sub ircstyle ( Str $text, *%args ) is export {
+	my $color = %args.keys ∩ %irc-colors.keys;
+	my $style = %args.keys ∩ %irc-styles.keys;
+	if any($color.elems, $style.elems) > 1 {
+		die "Cannot specify two styles or two colors at the same time.";
+	}
+	irc-style-text $text, :color($color[0]), :style($style[0]);
+}
+
 #| styles and colors text. returns a copy.
 #| Colors allowed: white, blue, green, red, brown, purple, orange, yellow, light_green, teal,
 #| light_cyan, light_blue, pink, grey, light_grey.
