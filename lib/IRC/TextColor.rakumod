@@ -1,7 +1,14 @@
-use v6;
-=head1 IRC::TextColor
-=para
+=begin pod
+
+=head1 NAME
+
+IRC::TextColor - Color/Style text for IRC
+
+=head1 DESCRIPTION
+
 A plugin to style and color text for IRC. It can also convert the ANSIColor text and style from your terminal to IRC Text and style.
+
+=end pod
 
 my %irc-styles =
 	'bold'      => 2.chr,
@@ -65,6 +72,7 @@ sub irc-style-char ( Str() $style ) is export {
 sub irc-color-start ( Str() $color ) is export {
 	return %irc-styles{'color'} ~ %irc-colors{$color} if %irc-colors{$color};
 }
+
 #| a shortened function. Like irc-style-text but you can use shorter versions like
 #| C<ircstyle('text', :bold, :green)
 sub ircstyle ( Str() $text, *%args ) is export {
@@ -95,6 +103,7 @@ sub irc-style-text ( Str() $text is copy, :$style? = 0, :$color? = 0, :$bgcolor?
 	}
 	return $text;
 }
+
 #| Convert ANSI style/colored text from your terminal output to IRC styled/colored text.
 #| Supports both foreground and background color, as well as italic, underline and bold.
 sub ansi-to-irc (Str() $text is copy) is export returns Str {
@@ -138,5 +147,26 @@ sub ansi-to-irc (Str() $text is copy) is export returns Str {
 			}
 		}
 	}
-	return $text;
+	$text
 }
+
+=begin pod
+
+=head1 AUTHOR
+
+Samantha McVey
+
+Source can be located at: https://github.com/raku-community-modules/IRC-TextColor .
+Comments and Pull Requests are welcome.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2016 - 2017 Samantha McVey
+
+Copyright 2024 The Raku Community
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
+=end pod
+
+# vim: expandtab shiftwidth=4
