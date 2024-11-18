@@ -1,4 +1,6 @@
 Revision history for IRC-TextColor
 
 {{$NEXT}}
+
+0.4.0  2024-11-18T12:02:48+01:00
     - Initial version as a Raku Community Module
