@@ -3,12 +3,26 @@ use IRC::TextColor;
 
 plan 6;
 
-my $irc = slurp $*PROGRAM.sibling('02-irc.txt');
+is-deeply
+  irc-style-text('text', :style<bold>, :color<teal>, :bgcolor<blue>),
+  "\x[2]\x[3]10,02text\x[F]",
+  "irc-style-text works";
 
-is irc-style-text('text', :style<bold>, :color<teal>, :bgcolor<blue>), $irc, "irc-style-text works";
-is ircstyle('text', :bold, :teal), irc-style-text('text', :color('teal'), :style('bold')), "ircstyle works with bold and color";
-is ircstyle('text', :bold), irc-style-text('text', :style('bold')), "ircstyle works with just bold";
-is ircstyle('text', :teal), irc-style-text('text', :color('teal')), "ircstyle texts with just color";
+is-deeply
+  ircstyle('text', :bold, :teal),
+  irc-style-text('text', :color<teal>, :style<bold>),
+  "ircstyle works with bold and color";
+
+is-deeply
+  ircstyle('text', :bold),
+  irc-style-text('text', :style<bold>),
+  "ircstyle works with just bold";
+
+is-deeply
+  ircstyle('text', :teal),
+  irc-style-text('text', :color<teal>),
+  "ircstyle texts with just color";
+
 is-deeply irc-style-text(42), '42', 'irc-style-text can take a Cool';
 is-deeply ircstyle(42),       '42', 'ircstyle can take a Cool';
 

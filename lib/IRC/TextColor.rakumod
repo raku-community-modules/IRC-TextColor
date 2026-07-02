@@ -1,172 +1,164 @@
-=begin pod
+my constant %irc-styles =
+  bold      => 2.chr,
+  bold_off  => 2.chr,
+  bold-off  => 2.chr,
+  italic    => 29.chr,
+  underline => 31.chr,
+  reset     => 15.chr,
+  inverse   => 22.chr,
+  color     => 3.chr,
+;
+my constant $COLOR  = %irc-styles<color>;
+my constant $RESET  = %irc-styles<reset>;
+my constant @styles = eager %irc-styles.keys.sort;
 
-=head1 NAME
+my constant %irc-colors =
+  white       => '00',
+  black       => '01',
+  blue        => '02',
+  green       => '03',
+  red         => '04',
+  brown       => '05',
+  purple      => '06',
+  orange      => '07',
+  yellow      => '08',
+  light_green => '09',
+  light-green => '09',
+  teal        => '10',
+  light-cyan  => '11',
+  light_cyan  => '11',
+  light-blue  => '12',
+  light_blue  => '12',
+  pink        => '13',
+  grey        => '14',
+  light-grey  => '15',
+  light_grey  => '15',
+;
+my constant @irc-colors = eager %irc-colors.keys.sort;
 
-IRC::TextColor - Color/Style text for IRC
+my constant %ansi-style =
+  reset         => "0",
+  bold          => "1",
+  underline     => "4",
+  inverse       => "7",
+  bold-off      => "22",
+  bold_off      => "22",
+  underline-off => "24",
+  underline_off => "24",
+  inverse-off   => "27",
+  inverse_off   => "27",
+;
 
-=head1 DESCRIPTION
+my constant %ansi-colors =
+  black      => "30",
+  red        => "31",
+  green      => "32",
+  yellow     => "33",
+  blue       => "34",
+#  magenta    => "35",
+  purple     => "35",
+#  cyan       => "36",
+  light-cyan => "36",
+  light_cyan => "36",
+  white      => "37",
+  default    => "39",
+;
 
-A plugin to style and color text for IRC. It can also convert the ANSIColor text and style from your terminal to IRC Text and style.
+my constant %ansi-back-colors =
+  black      => "40",
+  red        => "41",
+  green      => "42",
+  yellow     => "43",
+  blue       => "44",
+  magenta    => "45",
+#  cyan       => "46",
+  light-cyan => "46",
+  light_cyan => "46",
+  white      => "47",
+  default    => "49",
+;
 
-=end pod
-
-my %irc-styles =
-	'bold'      => 2.chr,
-	'bold_off'  => 2.chr,
-	'italic'    => 29.chr,
-	'underline' => 31.chr,
-	'reset'     => 15.chr,
-	'inverse'   => 22.chr,
-	'color'     => 3.chr;
-my %irc-colors =
-	'white'       => '00',
-	'black'       => '01',
-	'blue'        => '02',
-	'green'       => '03',
-	'red'         => '04',
-	'brown'       => '05',
-	'purple'      => '06',
-	'orange'      => '07',
-	'yellow'      => '08',
-	'light_green' => '09',
-	'teal'        => '10',
-	'light_cyan'  => '11',
-	'light_blue'  => '12',
-	'pink'        => '13',
-	'grey'        => '14',
-	'light_grey'  => '15';
-my %ansi-style =
-	reset         => "0",
-	bold          => "1",
-	underline     => "4",
-	inverse       => "7",
-	bold_off      => "22",
-	underline_off => "24",
-	inverse_off   => "27";
-my %ansi-colors =
-	black      => "30",
-	red        => "31",
-	green      => "32",
-	yellow     => "33",
-	blue       => "34",
-#	magenta    => "35",
-	purple    => "35",
-#	cyan       => "36",
-	light_cyan => "36",
-	white      => "37",
-	default    => "39";
-my %ansi-back-colors =
-	black   => "40",
-	red     => "41",
-	green   => "42",
-	yellow  => "43",
-	blue    => "44",
-	magenta => "45",
-	#cyan    => "46",
-	light_cyan => "46",
-	white   => "47",
-	default => "49";
-sub irc-style-char ( Str() $style ) is export {
-	return %irc-styles{$style} if %irc-styles{$style};
+# This appears to be dead code.  Keeping it anyway just in case something
+# in the ecosystem depends on it
+my sub style-char(Str() $style) is export {  # UNCOVERABLE
+     $_ with %irc-styles{$style}  # UNCOVERABLE
 }
-sub irc-color-start ( Str() $color ) is export {
-	return %irc-styles{'color'} ~ %irc-colors{$color} if %irc-colors{$color};
-}
-
-#| a shortened function. Like irc-style-text but you can use shorter versions like
-#| C<ircstyle('text', :bold, :green)
-sub ircstyle ( Str() $text, *%args ) is export {
-	my $color = %args.keys ∩ %irc-colors.keys;
-	my $style = %args.keys ∩ %irc-styles.keys;
-	if any($color.elems, $style.elems) > 1 {
-		die "Cannot specify two styles or two colors at the same time.";
-	}
-	irc-style-text $text, :color($color[0]), :style($style[0]);
-}
-
-#| styles and colors text. returns a copy.
-#| Colors allowed: white, blue, green, red, brown, purple, orange, yellow, light_green, teal,
-#| light_cyan, light_blue, pink, grey, light_grey.
-sub irc-style-text ( Str() $text is copy, :$style? = 0, :$color? = 0, :$bgcolor? = 0 ) returns Str is export {
-	if $color or $bgcolor {
-		if $color and $bgcolor {
-			$text = %irc-styles<color> ~ %irc-colors{$color} ~ ',' ~ %irc-colors{$bgcolor} ~ $text ~ %irc-styles<reset>;
-		}
-		elsif %irc-colors{$color} {
-			$text = %irc-styles{'color'} ~ %irc-colors{$color} ~ $text ~ %irc-styles{'reset'};
-		}
-	}
-	given $style {
-		if %irc-styles{$style} {
-			$text = %irc-styles{$style} ~ $text ~ %irc-styles{'reset'};
-		}
-	}
-	return $text;
+my sub color-start( Str() $color) is export {
+    "$COLOR$_" with %irc-colors{$color}
 }
 
-#| Convert ANSI style/colored text from your terminal output to IRC styled/colored text.
-#| Supports both foreground and background color, as well as italic, underline and bold.
-sub ansi-to-irc (Str() $text is copy) is export returns Str {
-	my $escape = "\e[";
-	my $end = 'm';
-	if $text ~~ /$escape/ {
-		#say "matched escape";
-		my $mescape = 'm' ~ $escape;
-		# This is for when there are multiple codes in one block
-		# \e[01;10m => \e[01m\e[10m so down below works correctly FIXME
-		$text ~~ s:g/($escape \d+ )';'( \d+ m)/$0$mescape$1/;
-		# This is to replace leading zeros on numbers so it matches properly FIXME
-		$text ~~ s:g/$escape 0 (\d) /$escape$0/;
-		for %ansi-colors -> $pair {
-			#say "key: {$pair.key} value: {$pair.value}";
-			if %irc-colors{$pair.key} {
-				#say "key exists";
-				my $final = $escape ~ $pair.value ~ $end;
-				#say $final.ord;
-				my $replaced = irc-color-start($pair.key);
-				$text ~~ s:g/$final/$replaced/;
-			}
-		}
-		for %ansi-back-colors -> $pair {
-			if %irc-colors{$pair.key} {
-				if %irc-colors{$pair.key} {
-					my $final = $escape ~ $pair.value ~ $end;
-					my $replaced = %irc-styles{'color'} ~ ',' ~ %irc-colors{$pair.key};
-					$text ~~ s:g/$final/$replaced/;
-				}
-			}
-		}
-		for %ansi-style -> $pair {
-			#say "key: {$pair.key} value: {$pair.value}";
-			#$text ~~ s:g/$escape 0(\d)/$escape$0/;
-			if %irc-styles{$pair.key} {
-				my $final = $escape ~ $pair.value ~ $end;
-				#say $final.ord.join(', ');
-				my $replaced = %irc-styles{$pair.key};
-				$text ~~ s:g/$final/$replaced/;
-			}
-		}
-	}
-	$text
+my sub ircstyle(Str() $text, *%args) is export {
+    my @color = %irc-colors{%args.keys}:k;
+    my @style = %irc-styles{%args.keys}:k;
+
+    any(@color, @style) > 1
+      ?? die "Cannot specify two styles or two colors at the same time."
+      !! irc-style-text $text, :color(@color[0] // ""), :style(@style[0] // "")
 }
 
-=begin pod
+my sub irc-style-text(
+  Str() $text,
+       :$style   = "",
+       :$color   = "",
+       :$bgcolor = "",
+--> Str:D) is export {
 
-=head1 AUTHOR
+    my $styling = %irc-styles{$style} // "";
 
-Samantha McVey
+    if %irc-colors{$color} -> $fg {
+        (my $bg = %irc-colors{$bgcolor})
+          ?? "$styling$COLOR$fg,$bg$text$RESET"
+          !! "$styling$COLOR$fg$text$RESET"
+    }
+    elsif $styling {  # UNCOVERABLE
+        "$styling$text$RESET"
+    }
+    else {
+        $text
+    }
+}
 
-Source can be located at: https://github.com/raku-community-modules/IRC-TextColor .
-Comments and Pull Requests are welcome.
+my sub ansi-to-irc(Str() $text is copy --> Str:D) is export {
+    my constant $escape  = "\e[";
+    my constant $end     = 'm';
+    my constant $mescape = "m$escape";
 
-=head1 COPYRIGHT AND LICENSE
+    if $text ~~ /$escape/ {
 
-Copyright 2016 - 2017 Samantha McVey
+        # For when there are multiple codes in one block
+        # \e[01;10m => \e[01m\e[10m so down below works correctly FIXME
+        $text ~~ s:g/($escape \d+ )';'( \d+ m)/$0$mescape$1/;
 
-Copyright 2024 The Raku Community
+        # To replace leading zeros on numbers so it matches properly FIXME
+        $text ~~ s:g/$escape 0 (\d) /$escape$0/;
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+        for %ansi-colors -> $pair {
+            if %irc-colors{$pair.key} {
+                $text .= subst(
+                  "$escape$pair.value()$end",
+                  color-start($pair.key),
+                  :global
+                );
+            }
+        }
+        for %ansi-back-colors -> $pair {
+            if %irc-colors{$pair.key} -> $selected {
+                $text .= subst(
+                  "$escape$pair.value()$end",
+                  "$COLOR,$selected",
+                  :global
+                )
+            }
+        }
 
-=end pod
+        for %ansi-style -> $pair {
+            if %irc-styles{$pair.key} -> $selected {
+                $text .= subst("$escape$pair.value()$end", $selected, :global);
+            }
+        }
+    }
+
+    $text
+}
 
 # vim: expandtab shiftwidth=4

@@ -1,1 +1,3 @@
-.precomp
+.precomp/
+/IRC-Textcolor-*
+*.rakucov
