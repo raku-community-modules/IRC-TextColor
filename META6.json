@@ -3,6 +3,8 @@
   "authors": [
     "Samantha McVey"
   ],
+  "build-depends": [
+  ],
   "depends": [
   ],
   "description": "Color/Style text for IRC",
@@ -12,6 +14,9 @@
     "IRC::TextColor": "lib/IRC/TextColor.rakumod"
   },
   "raku": "6.*",
+  "resources": [
+  ],
+  "source-url": "https://github.com/raku-community-modules/IRC-TextColor.git",
   "support": {
     "bugtracker": "https://github.com/raku-community-modules/IRC-TextColor/issues",
     "email": "community@raku.org",
@@ -22,5 +27,7 @@
     "COLOR",
     "ANSI"
   ],
-  "version": "0.4.0"
+  "test-depends": [
+  ],
+  "version": "0.4.1"
 }

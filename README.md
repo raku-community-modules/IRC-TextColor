@@ -5,44 +5,62 @@ NAME
 
 IRC::TextColor - Color/Style text for IRC
 
+SYNOPSIS
+========
+
+```raku
+use IRC::TextColor;
+
+say ircstyle 'text', :bold, :green;
+
+say irc-style-text 'text', :style<bold>, :color<green>;
+```
+
 DESCRIPTION
 ===========
 
 A plugin to style and color text for IRC. It can also convert the ANSIColor text and style from your terminal to IRC Text and style.
 
-### sub ircstyle
+EXPORTED SUBROUTINES
+====================
+
+ircstyle
+--------
 
 ```raku
-sub ircstyle(
-    Str(Any) $text,
-    *%args
-) returns Mu
+say ircstyle("text", :bold, :green);
 ```
 
-a shortened function. Like irc-style-text but you can use shorter versions like C<ircstyle('text', :bold, :green)
+A shortened function. Like `irc-style-text` but shorter and with fewer options. But allows specification by style and color directly. Does not allow for setting background color.
 
-### sub irc-style-text
+irc-style-text
+--------------
 
 ```raku
-sub irc-style-text(
-    Str(Any) $text is copy,
-    :$style = 0,
-    :$color = 0,
-    :$bgcolor = 0
-) returns Str
+say irc-style-text("text", :$style, :$color, :$bgcolor);
 ```
 
-styles and colors text. returns a copy. Colors allowed: white, blue, green, red, brown, purple, orange, yellow, light_green, teal, light_cyan, light_blue, pink, grey, light_grey.
+Allows setting of a style, a color and a background color.
 
-### sub ansi-to-irc
+Allowed colors are:
 
-```raku
-sub ansi-to-irc(
-    Str(Any) $text is copy
-) returns Str
-```
+    white black blue green red brown purple orange yellow
+    light-green teal light-cyan light-blue pink grey light-grey
+
+Allowed styles are:
+
+    bold italic underline inverse
+
+head
+====
+
+ansi-to-irc
 
 Convert ANSI style/colored text from your terminal output to IRC styled/colored text. Supports both foreground and background color, as well as italic, underline and bold.
+
+```raku
+say ansi-to-irc($ansi);
+```
 
 AUTHOR
 ======
@@ -56,7 +74,7 @@ COPYRIGHT AND LICENSE
 
 Copyright 2016 - 2017 Samantha McVey
 
-Copyright 2024 The Raku Community
+Copyright 2024, 2026 The Raku Community
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

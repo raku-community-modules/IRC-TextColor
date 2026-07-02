@@ -1,6 +1,8 @@
 Revision history for IRC-TextColor
 
 {{$NEXT}}
+
+0.4.1  2026-07-02T13:11:55+02:00
     - Streamline code, almost a complete rewrite
     - Full coverage testing
     - Modernize META

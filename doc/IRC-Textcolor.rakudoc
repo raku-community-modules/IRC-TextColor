@@ -56,9 +56,9 @@ Convert ANSI style/colored text from your terminal output to IRC
 styled/colored text.  Supports both foreground and background color,
 as well as italic, underline and bold.
 
-=begin code
+=begin code :lang<raku>
 say ansi-to-irc($ansi);
-=begin pod
+=end code
 
 =head1 AUTHOR
 
